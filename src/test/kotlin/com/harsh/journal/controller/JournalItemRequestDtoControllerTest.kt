@@ -10,7 +10,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(JournalController::class)
-class JournalItemDtoControllerTest {
+class JournalItemRequestDtoControllerTest {
 
     @Autowired
     lateinit var mockMvc: MockMvc

@@ -6,10 +6,10 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 
 @Entity
-data class JournalEntryEntity(
+class JournalEntryEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Int = 0,
-    val title: String,
-    val content: String?,
+    var id: Int = 0,
+    var title: String = "",
+    var content: String? = "",
 )

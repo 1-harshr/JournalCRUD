@@ -1,6 +1,7 @@
 package com.harsh.journal.controller
 
-import com.harsh.journal.models.dto.JournalItemDto
+import com.harsh.journal.models.dto.JournalItemRequestDto
+import com.harsh.journal.models.dto.JournalItemResponseDto
 import com.harsh.journal.service.JournalService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -17,7 +18,7 @@ class JournalController(
 ) {
 
     @GetMapping("/get-all")
-    fun getAllJournalItems(): ResponseEntity<List<JournalItemDto>> {
+    fun getAllJournalItems(): ResponseEntity<List<JournalItemResponseDto>> {
         return try {
             ResponseEntity.ok(
                 journalService.getAll()
@@ -28,18 +29,17 @@ class JournalController(
     }
 
     @GetMapping("/get-journal/{id}")
-    fun getJournalItem(@PathVariable("id") id: Int): ResponseEntity<JournalItemDto> {
+    fun getJournalItem(@PathVariable("id") id: Int): ResponseEntity<JournalItemResponseDto> {
         return try {
-            ResponseEntity.ok(
-                journalService.get(id)
-            )
+            val res = journalService.get(id) ?: return ResponseEntity.notFound().build()
+            return ResponseEntity.ok(res)
         } catch (_ : Exception){
             ResponseEntity.internalServerError().build()
         }
     }
 
     @PostMapping("/add-journal")
-    fun addJournal(@RequestBody journalItem: JournalItemDto): ResponseEntity<Boolean>{
+    fun addJournal(@RequestBody journalItem: JournalItemRequestDto): ResponseEntity<Boolean>{
         return try {
             ResponseEntity.ok(
                 journalService.save(journalItem)
