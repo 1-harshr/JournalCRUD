@@ -1,8 +1,10 @@
 package com.harsh.journal.repository
 
-import org.springframework.stereotype.Repository
+import com.harsh.journal.models.entity.JournalEntryEntity
+import org.springframework.data.jpa.repository.JpaRepository
 
 
 
-class JournalRepository {
+interface JournalRepository : JpaRepository<JournalEntryEntity, Int> {
+
 }

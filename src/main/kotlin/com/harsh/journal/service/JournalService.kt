@@ -1,7 +1,9 @@
 package com.harsh.journal.service
 
 
+import com.harsh.journal.mappers.toDto
 import com.harsh.journal.models.dto.JournalItemDto
+import com.harsh.journal.models.entity.JournalEntryEntity
 import com.harsh.journal.repository.JournalRepository
 import org.springframework.stereotype.Service
 
@@ -15,21 +17,27 @@ interface JournalService {
 
 @Service
 class JournalServiceImpl constructor(
-
+    private val journalRepository: JournalRepository
 ): JournalService {
-    private var all = mutableListOf<JournalItemDto>()
 
     override fun getAll(): List<JournalItemDto> {
-        return all
+        return journalRepository.findAll().map {
+            it.toDto()
+        }
     }
 
     override fun get(id: Int): JournalItemDto? {
-        return all.find { it.id == id }
+        return journalRepository.findById(id).orElse(null)?.toDto()
     }
 
     override fun save(journalItemDto: JournalItemDto): Boolean {
         try {
-            all.add(journalItemDto)
+            journalRepository.save(
+                JournalEntryEntity(
+                    title = journalItemDto.title,
+                    content = journalItemDto.content,
+                )
+            )
             return true
         }
         catch (_: Exception) {
