@@ -1,6 +1,7 @@
 package com.harsh.journal.service
 
 
+import com.harsh.journal.exception.JournalNotFoundException
 import com.harsh.journal.mappers.toDto
 import com.harsh.journal.models.dto.JournalItemRequestDto
 import com.harsh.journal.models.dto.JournalItemResponseDto
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service
 interface JournalService {
     fun getAll(): List<JournalItemResponseDto>
 
-    fun get(id: Int): JournalItemResponseDto?
+    fun get(id: Int): JournalItemResponseDto
 
     fun save(journalItemRequestDto: JournalItemRequestDto): Boolean
 
@@ -31,8 +32,10 @@ class JournalServiceImpl constructor(
         }
     }
 
-    override fun get(id: Int): JournalItemResponseDto? {
-        return journalRepository.findById(id).orElse(null)?.toDto()
+    override fun get(id: Int): JournalItemResponseDto {
+        return journalRepository.findById(id).orElseThrow {
+            JournalNotFoundException("Journal with id $id not found.")
+        }.toDto()
     }
 
     override fun save(journalItemRequestDto: JournalItemRequestDto): Boolean {

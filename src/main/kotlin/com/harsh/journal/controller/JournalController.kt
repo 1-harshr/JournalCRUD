@@ -32,12 +32,8 @@ class JournalController(
 
     @GetMapping("/get-journal/{id}")
     fun getJournalItem(@PathVariable("id") id: Int): ResponseEntity<JournalItemResponseDto> {
-        return try {
-            val res = journalService.get(id) ?: return ResponseEntity.notFound().build()
-            return ResponseEntity.ok(res)
-        } catch (_ : Exception){
-            ResponseEntity.internalServerError().build()
-        }
+        val res = journalService.get(id)
+        return ResponseEntity.ok(res)
     }
 
     @PostMapping("/add-journal")
