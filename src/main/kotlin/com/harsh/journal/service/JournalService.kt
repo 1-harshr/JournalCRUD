@@ -14,6 +14,10 @@ interface JournalService {
     fun get(id: Int): JournalItemResponseDto?
 
     fun save(journalItemRequestDto: JournalItemRequestDto): Boolean
+
+    fun delete(id: Int): Boolean
+
+    fun update(id: Int, dto: JournalItemRequestDto): Boolean
 }
 
 @Service
@@ -44,6 +48,23 @@ class JournalServiceImpl constructor(
         catch (_: Exception) {
             return false
         }
+    }
+
+    override fun delete(id: Int): Boolean {
+        journalRepository.deleteById(id)
+        return true
+    }
+
+    override fun update(id: Int, dto: JournalItemRequestDto): Boolean {
+        val entity = journalRepository.findById(id).orElse(null)
+        if (entity != null) {
+            entity.title = dto.title
+            entity.content = dto.content
+            journalRepository.save(entity)
+            return true
+        }
+        return false
+
     }
 
 
