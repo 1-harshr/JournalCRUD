@@ -3,6 +3,7 @@ package com.harsh.journal.controller
 import com.harsh.journal.models.dto.JournalItemRequestDto
 import com.harsh.journal.models.dto.JournalItemResponseDto
 import com.harsh.journal.service.JournalService
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -35,7 +36,7 @@ class JournalController(
     }
 
     @PostMapping("/add-journal")
-    fun addJournal(@RequestBody journalItem: JournalItemRequestDto): ResponseEntity<JournalItemResponseDto> {
+    fun addJournal( @Valid @RequestBody journalItem: JournalItemRequestDto): ResponseEntity<JournalItemResponseDto> {
         return ResponseEntity.status(HttpStatus.CREATED).body(
             journalService.save(journalItem)
         )
@@ -45,7 +46,7 @@ class JournalController(
     @PutMapping("/update-journal/{id}")
     fun updateJournal(
         @PathVariable("id") id: Int,
-        @RequestBody dto: JournalItemRequestDto
+        @Valid @RequestBody dto: JournalItemRequestDto
     ): ResponseEntity<JournalItemResponseDto> {
         return ResponseEntity.ok(journalService.update(id, dto))
     }
