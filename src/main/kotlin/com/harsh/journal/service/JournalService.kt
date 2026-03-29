@@ -14,11 +14,11 @@ interface JournalService {
 
     fun get(id: Int): JournalItemResponseDto
 
-    fun save(journalItemRequestDto: JournalItemRequestDto): Boolean
+    fun save(journalItemRequestDto: JournalItemRequestDto): JournalItemResponseDto
 
-    fun delete(id: Int): Boolean
+    fun delete(id: Int)
 
-    fun update(id: Int, dto: JournalItemRequestDto): Boolean
+    fun update(id: Int, dto: JournalItemRequestDto): JournalItemResponseDto
 }
 
 @Service
@@ -38,35 +38,34 @@ class JournalServiceImpl constructor(
         }.toDto()
     }
 
-    override fun save(journalItemRequestDto: JournalItemRequestDto): Boolean {
-        try {
-            journalRepository.save(
-                JournalEntryEntity(
-                    title = journalItemRequestDto.title,
-                    content = journalItemRequestDto.content,
-                )
+    override fun save(journalItemRequestDto: JournalItemRequestDto): JournalItemResponseDto {
+        val savedJournal = journalRepository.save(
+            JournalEntryEntity(
+                title = journalItemRequestDto.title,
+                content = journalItemRequestDto.content,
             )
-            return true
-        }
-        catch (_: Exception) {
-            return false
-        }
+        )
+
+        return savedJournal.toDto()
     }
 
-    override fun delete(id: Int): Boolean {
-        journalRepository.deleteById(id)
-        return true
+    override fun delete(id: Int) {
+        val journalEntry = journalRepository.findById(id).orElseThrow{
+            JournalNotFoundException("Journal with id $id not found.")
+        }
+        journalRepository.delete(journalEntry)
     }
 
-    override fun update(id: Int, dto: JournalItemRequestDto): Boolean {
-        val entity = journalRepository.findById(id).orElse(null)
-        if (entity != null) {
-            entity.title = dto.title
-            entity.content = dto.content
-            journalRepository.save(entity)
-            return true
+    override fun update(id: Int, dto: JournalItemRequestDto): JournalItemResponseDto {
+        val entity = journalRepository.findById(id).orElseThrow {
+            JournalNotFoundException("Journal with id $id not found.")
         }
-        return false
+
+        entity.title = dto.title
+        entity.content = dto.content
+        val updatedEntity = journalRepository.save(entity)
+
+        return updatedEntity.toDto()
 
     }
 
